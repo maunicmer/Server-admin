@@ -100,3 +100,59 @@ touch data/acme.json
 chmod 600 data/acme.json
 
 ```
+Para la autenticación hemos utilizado el paquete apache2-utils , solicitando una clave de la siguiente forma:
+
+```
+htpasswd -nb admin PasswordSuperSegura
+admin:$apr1$NQlSR6h1$lQnllz9cQhXHK8gFdP0yf0
+```
+
+```yml
+# data/configurations/dynamic.yml
+http:
+  middlewares:
+    secureHeaders:
+      headers:
+        sslRedirect: true
+        forceSTSHeader: true
+        stsIncludeSubdomains: true
+        stsPreload: true
+        stsSeconds: 31536000
+ 
+    user-auth:
+      basicAuth:
+        users:
+          - "admin:$apr1$NQlSR6h1$lQnllz9cQhXHK8gFdP0yf0"
+ 
+tls:
+  options:
+    default:
+      cipherSuites:
+        - TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384
+        - TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        - TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256
+        - TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        - TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305
+        - TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305
+      minVersion: VersionTLS12
+ ```
+ 
+ 
+ ```sh
+ # Ejecutamos el stack de docker-compose creado
+admin@ip-10-0-3-96:~/traefik$ docker-compose up -d
+Pulling traefik (traefik:latest)...
+latest: Pulling from library/traefik
+0a6724ff3fcd: Pull complete
+64d0c2f48fed: Pull complete
+ce56bf94d075: Pull complete
+4de49a0677f6: Pull complete
+Digest: sha256:dec15c406c554e6319a497003f2428f06146e15c7a08016c4565dc5a1711ecdb
+Status: Downloaded newer image for traefik:latest
+Creating traefik ... done
+ 
+# Verificamos que está corriendo
+admin@ip-10-0-3-96:~/traefik$ docker ps
+CONTAINER ID IMAGE COMMAND CREATED STATUS PORTS NAMES
+807285307a14 traefik:latest "/entrypoint.sh trae…" 2 minutes ago Up 2 minutes 0.0.0.0:80->80/tcp, 0.0.0.0:443->443/tcp traefik
+```
