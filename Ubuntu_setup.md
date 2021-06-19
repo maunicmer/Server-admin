@@ -8,7 +8,8 @@ Netplan supports two renderers, NetworkManager and Systemd-networkd. NetworkMana
 
 /etc/netplan/01-netcfg.yaml
 
-/**
+```yaml
+# 01-netcfg.yaml
 network:
   version: 2
   renderer: networkd
@@ -20,4 +21,4 @@ network:
       gateway4: 192.168.121.1
       nameservers:
           addresses: [8.8.8.8, 1.1.1.1]
-*/
+```
