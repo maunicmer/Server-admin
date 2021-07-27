@@ -1,0 +1,19 @@
+# remove conflict packages with Docker first
+
+[root@dlp ~]# dnf -y remove podman runc
+[root@dlp ~]# curl https://download.docker.com/linux/centos/docker-ce.repo -o /etc/yum.repos.d/docker-ce.repo 
+[root@dlp ~]# sed -i -e "s/enabled=1/enabled=0/g" /etc/yum.repos.d/docker-ce.repo 
+[root@dlp ~]# dnf --enablerepo=docker-ce-stable -y install docker-ce
+[root@dlp ~]# systemctl enable --now docker
+[root@dlp ~]# rpm -q docker-ce 
+docker-ce-20.10.5-3.el8.x86_64
+[root@dlp ~]# docker version 
+Client: Docker Engine - Community
+ Version:           20.10.5
+ API version:       1.41
+ Go version:        go1.13.15
+ Git commit:        55c4c88
+ Built:             Tue Mar  2 20:17:04 2021
+ OS/Arch:           linux/amd64
+ Context:           default
+ Experimental:      true
